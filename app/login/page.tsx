@@ -1,49 +1,91 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import {
+  useState,
+} from "react";
+
+import {
+  useRouter,
+} from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const router =
+    useRouter();
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] =
+    useState("");
+
   const [password, setPassword] =
     useState("");
 
-  const login = () => {
-    if (
-      email === "admin@hostelos.com" &&
-      password === "admin123"
-    ) {
-      localStorage.setItem(
-        "hostel-admin",
-        "true"
-      );
+  const [error, setError] =
+    useState("");
 
-      router.push("/");
-    } else {
-      alert("Invalid credentials");
-    }
-  };
+  const handleLogin =
+    async () => {
+      try {
+        const response =
+          await fetch(
+            "http://localhost:5000/login",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+              body: JSON.stringify({
+                username,
+                password,
+              }),
+            }
+          );
+
+        const data =
+          await response.json();
+
+        if (!data.success) {
+          setError(
+            "Invalid credentials"
+          );
+
+          return;
+        }
+
+        localStorage.setItem(
+          "hostel-token",
+          data.token
+        );
+
+        router.push("/");
+      } catch (error) {
+        console.log(error);
+
+        setError(
+          "Login failed"
+        );
+      }
+    };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black p-6">
-      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 w-full max-w-md">
         <h1 className="text-4xl font-bold">
-          HostelOS
+          HostelOS Login
         </h1>
 
         <p className="text-zinc-400 mt-2">
-          Admin Authentication
+          Secure admin access
         </p>
 
-        <div className="mt-8 space-y-5">
+        <div className="mt-8 space-y-4">
           <input
-            type="email"
-            placeholder="Admin Email"
-            value={email}
+            type="text"
+            placeholder="Username"
+            value={username}
             onChange={(e) =>
-              setEmail(e.target.value)
+              setUsername(
+                e.target.value
+              )
             }
             className="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-4 outline-none"
           />
@@ -53,26 +95,26 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) =>
-              setPassword(e.target.value)
+              setPassword(
+                e.target.value
+              )
             }
             className="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-4 outline-none"
           />
-
-          <button
-            onClick={login}
-            className="w-full bg-white text-black py-4 rounded-xl font-semibold hover:opacity-80 transition"
-          >
-            Login
-          </button>
         </div>
 
-        <div className="mt-6 text-sm text-zinc-500">
-          Demo Login:
-          <br />
-          admin@hostelos.com
-          <br />
-          admin123
-        </div>
+        {error && (
+          <p className="text-red-400 mt-4">
+            {error}
+          </p>
+        )}
+
+        <button
+          onClick={handleLogin}
+          className="w-full bg-green-500 hover:bg-green-600 transition-all text-white py-4 rounded-xl mt-8 font-semibold"
+        >
+          Login
+        </button>
       </div>
     </div>
   );

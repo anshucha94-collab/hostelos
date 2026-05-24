@@ -1,55 +1,115 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import {
+  Html5QrcodeScanner,
+} from "html5-qrcode";
 
-import { useState } from "react";
-
-const QrScanner = dynamic(
-  () => import("react-qr-scanner"),
-  {
-    ssr: false,
-  }
-);
+import {
+  useEffect,
+  useState,
+} from "react";
 
 export default function ScannerPage() {
   const [result, setResult] =
     useState<any>(null);
 
-  const handleScan = async (
-    data: any
-  ) => {
-    if (data?.text) {
-      try {
-        const student = JSON.parse(
-          data.text
+  useEffect(() => {
+    let scanner: any;
+
+    const startScanner = async () => {
+      const reader =
+        document.getElementById(
+          "reader"
         );
 
-        setResult(student);
+      if (!reader) return;
 
-        await fetch(
-          "http://localhost:5000/logs",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              student:
-                student.studentName,
-              action: "ENTRY",
-            }),
-          }
-        );
-      } catch (error) {
-        console.log(error);
+      if (reader.innerHTML !== "") {
+        return;
       }
-    }
-  };
 
-  const handleError = (err: any) => {
-    console.log(err);
-  };
+      scanner =
+        new Html5QrcodeScanner(
+          "reader",
+          {
+            fps: 10,
+            qrbox: {
+              width: 250,
+              height: 250,
+            },
+            rememberLastUsedCamera: true,
+          },
+          false
+        );
+
+      let scanning = false;
+
+      scanner.render(
+        async (
+          decodedText: string
+        ) => {
+          if (scanning) return;
+
+          scanning = true;
+
+          try {
+            const student =
+              JSON.parse(
+                decodedText
+              );
+
+            const response =
+              await fetch(
+                "http://localhost:5000/scan",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type":
+                      "application/json",
+                  },
+                  body: JSON.stringify({
+                    studentId:
+                      student.studentId,
+                  }),
+                }
+              );
+
+            const scanResult =
+              await response.json();
+
+            setResult({
+              ...student,
+              action:
+                scanResult.action,
+              status:
+                scanResult.status,
+              lateNight:
+                scanResult.lateNight,
+            });
+
+            setTimeout(() => {
+              scanning = false;
+            }, 3000);
+          } catch (error) {
+            console.log(error);
+
+            scanning = false;
+          }
+        },
+        () => {}
+      );
+    };
+
+    startScanner();
+
+    return () => {
+      if (scanner) {
+        scanner
+          .clear()
+          .catch(() => {});
+      }
+    };
+  }, []);
 
   return (
     <div className="p-10">
@@ -61,15 +121,8 @@ export default function ScannerPage() {
         Smart hostel entry scanner
       </p>
 
-      <div className="mt-10 max-w-xl">
-        <QrScanner
-          delay={300}
-          onError={handleError}
-          onScan={handleScan}
-          style={{
-            width: "100%",
-          }}
-        />
+      <div className="mt-10 max-w-xl bg-white p-4 rounded-2xl">
+        <div id="reader"></div>
       </div>
 
       {result && (
@@ -88,9 +141,22 @@ export default function ScannerPage() {
             {result.studentId}
           </p>
 
-          <p className="mt-4 text-green-400">
-            Entry Logged Successfully
+          <p className="mt-2">
+            Status:
+            {result.status}
           </p>
+
+          <p className="mt-4 text-green-400">
+            {result.action} Logged
+            Successfully
+          </p>
+
+          {result.lateNight && (
+            <p className="mt-4 text-red-400 font-bold">
+              Late Night Movement
+              Alert
+            </p>
+          )}
         </div>
       )}
     </div>

@@ -1,14 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 export default function DashboardCards() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] =
+    useState<any>(null);
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5000/dashboard"
+      );
+
+      const data =
+        await res.json();
+
+      setStats(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    fetch("http://localhost:5000/dashboard")
-      .then((res) => res.json())
-      .then((data) => setStats(data));
+    fetchStats();
+
+    const interval =
+      setInterval(() => {
+        fetchStats();
+      }, 2000);
+
+    return () =>
+      clearInterval(interval);
   }, []);
 
   if (!stats) {
@@ -22,15 +47,18 @@ export default function DashboardCards() {
   const cards = [
     {
       title: "Total Students",
-      value: stats.totalStudents,
+      value:
+        stats.totalStudents,
     },
     {
       title: "Inside Hostel",
-      value: stats.insideStudents,
+      value:
+        stats.insideStudents,
     },
     {
       title: "Outside Hostel",
-      value: stats.outsideStudents,
+      value:
+        stats.outsideStudents,
     },
     {
       title: "Total Logs",

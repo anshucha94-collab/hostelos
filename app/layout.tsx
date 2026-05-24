@@ -2,59 +2,67 @@
 
 import "./globals.css";
 
-import { useEffect, useState } from "react";
+import Sidebar from "@/components/Sidebar";
 
 import {
-  usePathname,
-  useRouter,
-} from "next/navigation";
+  useEffect,
+} from "react";
 
-import Sidebar from "@/components/Sidebar";
+import {
+  useRouter,
+  usePathname,
+} from "next/navigation";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
+  const router =
+    useRouter();
 
-  const pathname = usePathname();
-
-  const [mounted, setMounted] =
-    useState(false);
-
-  const [isLoggedIn, setIsLoggedIn] =
-    useState(false);
+  const pathname =
+    usePathname();
 
   useEffect(() => {
-    setMounted(true);
+    const token =
+      localStorage.getItem(
+        "hostel-token"
+      );
 
-    const admin =
-      localStorage.getItem("hostel-admin");
+    const publicRoutes = [
+      "/login",
+    ];
 
-    if (admin) {
-      setIsLoggedIn(true);
+    const isPublic =
+      publicRoutes.includes(
+        pathname
+      );
+
+    if (
+      !token &&
+      !isPublic
+    ) {
+      router.push("/login");
     }
 
-    if (!admin && pathname !== "/login") {
-      router.push("/login");
+    if (
+      token &&
+      pathname === "/login"
+    ) {
+      router.push("/");
     }
   }, [pathname, router]);
 
-  if (!mounted) {
-    return (
-      <html lang="en">
-        <body />
-      </html>
-    );
-  }
+  const isLoginPage =
+    pathname === "/login";
 
   return (
     <html lang="en">
       <body className="bg-black text-white">
-        {pathname === "/login" ? (
+        {isLoginPage ? (
           children
-        ) : isLoggedIn ? (
+        ) : (
           <div className="flex">
             <Sidebar />
 
@@ -62,7 +70,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
-        ) : null}
+        )}
       </body>
     </html>
   );

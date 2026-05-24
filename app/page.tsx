@@ -1,6 +1,12 @@
+import Notifications from "@/components/Notifications";
+
 import DashboardCards from "@/components/DashboardCards";
+
 import RecentActivity from "@/components/RecentActivity";
+
 import RoomStatus from "@/components/RoomStatus";
+
+import AnalyticsChart from "@/components/AnalyticsChart";
 
 export default function Home() {
   return (
@@ -13,7 +19,11 @@ export default function Home() {
         Smart Hostel Monitoring System
       </p>
 
+      <Notifications />
+
       <DashboardCards />
+
+      <AnalyticsChart />
 
       <RecentActivity />
 
