@@ -12,7 +12,7 @@ export default function StudentsPage() {
 
   const fetchStudents = async () => {
     const res = await fetch(
-      "http://localhost:5000/students"
+      "https://hostelos-ld1n.onrender.com/students"
     );
 
     const data = await res.json();
@@ -28,7 +28,7 @@ export default function StudentsPage() {
     if (!name || !branch || !room) return;
 
     await fetch(
-      "http://localhost:5000/students",
+      "https://hostelos-ld1n.onrender.com/students",
       {
         method: "POST",
         headers: {
@@ -53,7 +53,7 @@ export default function StudentsPage() {
 
   const deleteStudent = async (id: number) => {
     await fetch(
-      `http://localhost:5000/students/${id}`,
+      `https://hostelos-ld1n.onrender.com/students/${id}`,
       {
         method: "DELETE",
       }

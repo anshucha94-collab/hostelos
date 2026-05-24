@@ -13,7 +13,7 @@ export default function Notifications() {
     async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/notifications"
+          "https://hostelos-ld1n.onrender.com/notifications"
         );
 
         const data =

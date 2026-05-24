@@ -60,7 +60,7 @@ export default function ScannerPage() {
 
             const response =
               await fetch(
-                "http://localhost:5000/scan",
+                "https://hostelos-ld1n.onrender.com/scan",
                 {
                   method: "POST",
                   headers: {

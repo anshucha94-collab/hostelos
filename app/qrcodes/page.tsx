@@ -12,7 +12,7 @@ export default function QRPage() {
     const fetchStudents = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/students"
+          "https://hostelos-ld1n.onrender.com/students"
         );
 
         const data = await res.json();

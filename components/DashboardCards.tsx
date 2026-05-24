@@ -12,7 +12,7 @@ export default function DashboardCards() {
   const fetchStats = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/dashboard"
+        "https://hostelos-ld1n.onrender.com/dashboard"
       );
 
       const data =

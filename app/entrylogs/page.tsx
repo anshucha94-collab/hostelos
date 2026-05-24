@@ -15,7 +15,7 @@ export default function EntryLogsPage() {
   const fetchLogs = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/logs"
+        "https://hostelos-ld1n.onrender.com/logs"
       );
 
       const data =
@@ -46,7 +46,7 @@ export default function EntryLogsPage() {
 
     try {
       await fetch(
-        "http://localhost:5000/logs",
+        "https://hostelos-ld1n.onrender.com/logs",
         {
           method: "POST",
           headers: {
