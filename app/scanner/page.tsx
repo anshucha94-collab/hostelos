@@ -75,7 +75,7 @@ export default function ScannerPage() {
 
   return (
     <div className="flex">
-      <Sidebar />
+      
 
       <div className="flex-1 p-8 bg-black min-h-screen text-white">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
