@@ -2,84 +2,55 @@
 
 import { useEffect, useState } from "react";
 
+import QRCode from "react-qr-code";
+
 import { QrReader } from "react-qr-reader";
 
 export default function ScannerPage() {
-  const [result, setResult] =
+  const [students, setStudents] =
+    useState<any[]>([]);
+
+  const [scanResult, setScanResult] =
     useState("");
 
   const [message, setMessage] =
     useState("");
 
+  const [loading, setLoading] =
+    useState(false);
+
+  useEffect(() => {
+    fetch(
+      "https://hostelos-ld1n.onrender.com/students"
+    )
+      .then((res) => res.json())
+      .then((data) =>
+        setStudents(data)
+      );
+  }, []);
+
   const handleScan = async (
-    data: string | null
+    data: string
   ) => {
-    if (data) {
-      setResult(data);
+    if (!data || loading) return;
 
-      try {
-        const response =
-          await fetch(
-            "https://hostelos-ld1n.onrender.com/scan",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
-              body: JSON.stringify({
-                studentId:
-                  Number(data),
-              }),
-            }
-          );
+    setLoading(true);
 
-        const result =
-          await response.json();
+    setScanResult(data);
 
-        setMessage(
-          `${result.student} ${result.action}`
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  return (
-    <div className="p-8 text-white">
-      <h1 className="text-4xl font-bold mb-8">
-        QR Scanner
-      </h1>
-
-      <div className="bg-zinc-900 p-6 rounded-2xl max-w-xl">
-        <QrReader
-          constraints={{
-            facingMode: "environment",
-          }}
-          onResult={(result) => {
-            if (result) {
-              handleScan(
-                result.getText()
-              );
-            }
-          }}
-        />
-
-        <div className="mt-6">
-          <p className="text-xl">
-            QR Result:
-          </p>
-
-          <p className="text-green-400">
-            {result}
-          </p>
-
-          <p className="text-yellow-400 mt-4">
-            {message}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+    try {
+      const response = await fetch(
+        "https://hostelos-ld1n.onrender.com/scan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            studentId:
+              Number(data),
+          }),
+        }
+      );
 }
