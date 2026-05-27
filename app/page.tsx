@@ -1,3 +1,5 @@
+import Sidebar from "@/components/Sidebar";
+
 import Notifications from "@/components/Notifications";
 
 import DashboardCards from "@/components/DashboardCards";
@@ -10,24 +12,28 @@ import AnalyticsChart from "@/components/AnalyticsChart";
 
 export default function Home() {
   return (
-    <div className="p-10">
-      <h1 className="text-4xl font-bold">
-        Dashboard
-      </h1>
+    <div className="flex bg-black min-h-screen text-white">
+      <Sidebar />
 
-      <p className="text-zinc-400 mt-2">
-        Smart Hostel Monitoring System
-      </p>
+      <div className="flex-1 p-10">
+        <h1 className="text-4xl font-bold">
+          Dashboard
+        </h1>
 
-      <Notifications />
+        <p className="text-zinc-400 mt-2">
+          Smart Hostel Monitoring System
+        </p>
 
-      <DashboardCards />
+        <Notifications />
 
-      <AnalyticsChart />
+        <DashboardCards />
 
-      <RecentActivity />
+        <AnalyticsChart />
 
-      <RoomStatus />
+        <RecentActivity />
+
+        <RoomStatus />
+      </div>
     </div>
   );
 }
