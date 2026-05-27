@@ -9,48 +9,48 @@ export default function Sidebar() {
 
   const logout = () => {
     localStorage.removeItem(
-      "hostel-admin"
+      "hostel-token"
     );
 
     router.push("/login");
   };
 
   return (
-    <div className="w-64 h-screen bg-zinc-950 border-r border-zinc-800 p-6">
-      <h1 className="text-3xl font-bold text-white mb-10">
+    <div className="w-64 min-h-screen bg-zinc-950 border-r border-zinc-800 p-6">
+      <h1 className="text-4xl font-bold text-white mb-10">
         HostelOS
       </h1>
 
       <nav className="space-y-4">
         <Link
           href="/"
-          className="block text-zinc-300 hover:text-white bg-zinc-900 px-4 py-3 rounded-xl"
+          className="block bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-3 rounded-xl"
         >
           Dashboard
         </Link>
 
         <Link
           href="/students"
-          className="block text-zinc-300 hover:text-white bg-zinc-900 px-4 py-3 rounded-xl"
+          className="block bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-3 rounded-xl"
         >
           Students
         </Link>
 
         <Link
           href="/scanner"
-          className="block text-green-400 bg-green-500/10 border border-green-500 px-4 py-3 rounded-xl"
+          className="block bg-green-500/10 border border-green-500 text-green-400 px-4 py-3 rounded-xl"
         >
           Security Hub
         </Link>
 
         <Link
           href="/entrylogs"
-          className="block text-zinc-300 hover:text-white bg-zinc-900 px-4 py-3 rounded-xl"
+          className="block bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-3 rounded-xl"
         >
           Entry Logs
         </Link>
 
-        <div className="text-yellow-400 bg-zinc-900 px-4 py-3 rounded-xl">
+        <div className="bg-zinc-900 text-yellow-400 px-4 py-3 rounded-xl">
           Security Active
         </div>
 
